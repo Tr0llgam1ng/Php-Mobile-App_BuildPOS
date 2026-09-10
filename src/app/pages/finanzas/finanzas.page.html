@@ -1,0 +1,150 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Finanzas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (resumen(); as datos) {
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>Ventas totales ({{ datos.ventas.numero_ventas }})</ion-card-subtitle>
+              <ion-card-title>{{ datos.ventas.total | currency }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list class="totales" lines="none">
+                <ion-item>
+                  <ion-label>Subtotal sin impuestos</ion-label>
+                  <ion-note slot="end">{{ datos.ventas.subtotal | currency }}</ion-note>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Impuestos cobrados</ion-label>
+                  <ion-note slot="end">{{ datos.ventas.impuestos | currency }}</ion-note>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Costo de lo vendido *</ion-label>
+                  <ion-note slot="end">{{ datos.ventas.costo_estimado | currency }}</ion-note>
+                </ion-item>
+                <ion-item class="total">
+                  <ion-label>Ganancia estimada *</ion-label>
+                  <ion-note slot="end">{{ datos.ventas.ganancia_estimada | currency }}</ion-note>
+                </ion-item>
+              </ion-list>
+              <ion-note>* Calculado con el precio de compra actual de cada material.</ion-note>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>Este mes ({{ datos.mes_actual.numero_ventas }} ventas)</ion-card-subtitle>
+              <ion-card-title>{{ datos.mes_actual.total | currency }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list class="totales" lines="none">
+                <ion-item>
+                  <ion-label>Subtotal sin impuestos</ion-label>
+                  <ion-note slot="end">{{ datos.mes_actual.subtotal | currency }}</ion-note>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Impuestos cobrados</ion-label>
+                  <ion-note slot="end">{{ datos.mes_actual.impuestos | currency }}</ion-note>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>
+                Cotizaciones pendientes ({{ datos.cotizaciones_pendientes.cantidad }})
+              </ion-card-subtitle>
+              <ion-card-title>{{ datos.cotizaciones_pendientes.total | currency }}</ion-card-title>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>
+                Inventario ({{ datos.inventario.materiales }} materiales · {{ datos.inventario.unidades }} unidades)
+              </ion-card-subtitle>
+              <ion-card-title>{{ datos.inventario.valor_costo | currency }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list class="totales" lines="none">
+                <ion-item>
+                  <ion-label>Valor a precio de compra</ion-label>
+                  <ion-note slot="end">{{ datos.inventario.valor_costo | currency }}</ion-note>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Valor a precio de venta</ion-label>
+                  <ion-note slot="end">{{ datos.inventario.valor_venta | currency }}</ion-note>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12" size-md="6">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>Stock bajo (≤ {{ datos.stock_minimo }} unidades)</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list lines="none">
+                @for (material of datos.stock_bajo; track material.id_material) {
+                  <ion-item>
+                    <ion-label>{{ material.nombre }}</ion-label>
+                    <ion-badge slot="end" color="danger">{{ material.stock }}</ion-badge>
+                  </ion-item>
+                } @empty {
+                  <p>Todos los materiales tienen stock suficiente.</p>
+                }
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <ion-col size="12">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>Materiales más vendidos</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list lines="none">
+                @for (material of datos.mas_vendidos; track material.id_material; let posicion = $index) {
+                  <ion-item>
+                    <ion-label>
+                      <h3>{{ posicion + 1 }}. {{ material.nombre }}</h3>
+                      <p>{{ material.unidades }} unidades</p>
+                    </ion-label>
+                    <ion-note slot="end">{{ material.importe | currency }}</ion-note>
+                  </ion-item>
+                } @empty {
+                  <p>Aún no hay ventas registradas.</p>
+                }
+              </ion-list>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  } @else if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <p class="vacio">No se pudo cargar el resumen. Desliza hacia abajo para reintentar.</p>
+  }
+</ion-content>

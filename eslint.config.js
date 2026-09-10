@@ -9,6 +9,8 @@ module.exports = tseslint.config(
     extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...angular.configs.tsRecommended],
     processor: angular.processInlineTemplates,
     rules: {
+      // La app está organizada con NgModules (componentes con standalone: false)
+      '@angular-eslint/prefer-standalone': 'off',
       '@angular-eslint/directive-selector': [
         'error',
         {

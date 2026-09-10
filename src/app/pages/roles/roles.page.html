@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Puestos de trabajo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <p class="nota">
+    Los permisos de cada puesto se definen en la API (core/auth.php). Los puestos base no se pueden renombrar ni eliminar.
+  </p>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (rol of filtrados(); track rol.id_rol) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ rol.nombre }}</h2>
+            <p>{{ rol.total_usuarios }} {{ rol.total_usuarios === 1 ? 'usuario' : 'usuarios' }}</p>
+          </ion-label>
+          @if (rol.es_base) {
+            <ion-badge slot="end" color="medium">Base</ion-badge>
+          } @else {
+            @if (sesion.puede('roles', 'editar')) {
+              <ion-button slot="end" fill="clear" aria-label="Renombrar puesto" (click)="renombrar(rol)">
+                <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+              </ion-button>
+            }
+            @if (sesion.puede('roles', 'eliminar')) {
+              <ion-button slot="end" fill="clear" color="danger" aria-label="Eliminar puesto" (click)="eliminar(rol)">
+                <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+              </ion-button>
+            }
+          }
+        </ion-item>
+      } @empty {
+        <p class="vacio">No hay puestos registrados.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('roles', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button aria-label="Nuevo puesto" (click)="crear()">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

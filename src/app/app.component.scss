@@ -1,0 +1,23 @@
+.perfil {
+  padding: 16px 20px 8px;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+}
+
+ion-menu ion-item {
+  --border-radius: 8px;
+  margin: 2px 8px;
+}
+
+ion-item.seleccionado {
+  --background: rgba(var(--ion-color-primary-rgb), 0.14);
+  --color: var(--ion-color-primary);
+
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+}

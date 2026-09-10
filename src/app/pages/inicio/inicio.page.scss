@@ -1,0 +1,20 @@
+.saludo {
+  margin: 8px 0 4px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.puesto {
+  margin: 0 0 16px;
+  color: var(--ion-color-medium);
+}
+
+ion-card {
+  height: calc(100% - 16px);
+  margin: 8px;
+
+  ion-icon {
+    margin-bottom: 8px;
+    font-size: 32px;
+  }
+}

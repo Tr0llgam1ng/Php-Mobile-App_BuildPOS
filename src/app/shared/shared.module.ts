@@ -1,0 +1,112 @@
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import {
+  IonApp,
+  IonBackButton,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonChip,
+  IonCol,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonFooter,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonInputPasswordToggle,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenu,
+  IonMenuButton,
+  IonMenuToggle,
+  IonNote,
+  IonRefresher,
+  IonRefresherContent,
+  IonRouterLink,
+  IonRouterOutlet,
+  IonRow,
+  IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonSplitPane,
+  IonText,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular';
+
+import { DocumentoFormComponent } from './documento-form/documento-form.component';
+import { DocumentoResumenComponent } from './documento-resumen/documento-resumen.component';
+
+const IONIC = [
+  IonApp,
+  IonBackButton,
+  IonBadge,
+  IonButton,
+  IonButtons,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardTitle,
+  IonChip,
+  IonCol,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonFooter,
+  IonGrid,
+  IonHeader,
+  IonIcon,
+  IonInput,
+  IonInputPasswordToggle,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonMenu,
+  IonMenuButton,
+  IonMenuToggle,
+  IonNote,
+  IonRefresher,
+  IonRefresherContent,
+  IonRouterLink,
+  IonRouterOutlet,
+  IonRow,
+  IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
+  IonSelect,
+  IonSelectOption,
+  IonSpinner,
+  IonSplitPane,
+  IonText,
+  IonTitle,
+  IonToolbar,
+];
+
+/**
+ * Módulo compartido: lo importan AppModule y todos los módulos de página.
+ * Reexporta CommonModule, formularios reactivos, el router, los componentes de Ionic
+ * y los componentes propios reutilizables.
+ */
+@NgModule({
+  declarations: [DocumentoFormComponent, DocumentoResumenComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, IONIC],
+  exports: [CommonModule, ReactiveFormsModule, RouterModule, IONIC, DocumentoFormComponent, DocumentoResumenComponent],
+})
+export class SharedModule {}

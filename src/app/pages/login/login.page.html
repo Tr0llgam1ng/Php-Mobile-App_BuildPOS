@@ -1,0 +1,43 @@
+<ion-content class="ion-padding">
+  <div class="contenedor">
+    <div class="encabezado">
+      <ion-icon name="cube-outline" color="primary" aria-hidden="true"></ion-icon>
+      <h1>Movil II</h1>
+      <p>Inicia sesión para continuar</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="iniciarSesion()">
+      <ion-input
+        formControlName="usuario"
+        label="Correo o número de contacto"
+        labelPlacement="floating"
+        fill="outline"
+        type="text"
+        autocomplete="username"
+        errorText="Escribe tu correo o número de contacto"
+      ></ion-input>
+
+      <ion-input
+        formControlName="password"
+        label="Contraseña"
+        labelPlacement="floating"
+        fill="outline"
+        type="password"
+        autocomplete="current-password"
+        errorText="Escribe tu contraseña"
+      >
+        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+      </ion-input>
+
+      <ion-button type="submit" expand="block" [disabled]="enviando()">
+        @if (enviando()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          Iniciar sesión
+        }
+      </ion-button>
+    </form>
+
+    <p class="aviso">¿No tienes cuenta? Pide a un administrador que te registre.</p>
+  </div>
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Ventas</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por folio, cliente o vendedor"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (!sesion.puede('finanzas')) {
+    <p class="nota">Se muestran las ventas que tú registraste.</p>
+  }
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (venta of filtrados(); track venta.id_venta) {
+        <ion-item [button]="true" [routerLink]="[venta.id_venta]">
+          <ion-label>
+            <h2>Venta #{{ venta.id_venta }} · {{ venta.cliente }}</h2>
+            <p>{{ venta.fecha | date: 'dd/MM/yyyy HH:mm' }} · {{ venta.vendedor }}</p>
+            @if (venta.id_cotizacion) {
+              <p>Proviene de la cotización #{{ venta.id_cotizacion }}</p>
+            }
+          </ion-label>
+          <ion-note slot="end">{{ venta.total | currency }}</ion-note>
+        </ion-item>
+      } @empty {
+        <p class="vacio">No hay ventas registradas.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('ventas', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button routerLink="nueva" aria-label="Nueva venta">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

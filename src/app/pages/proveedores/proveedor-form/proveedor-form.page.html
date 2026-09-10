@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/proveedores"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nuevo proveedor' : 'Editar proveedor' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      <ion-input
+        formControlName="nombre"
+        label="Nombre"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="El nombre es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="direccion"
+        label="Dirección"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="La dirección es obligatoria (máximo 255 caracteres)"
+      ></ion-input>
+
+      <ion-button type="submit" expand="block" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </ion-button>
+    </form>
+  }
+</ion-content>

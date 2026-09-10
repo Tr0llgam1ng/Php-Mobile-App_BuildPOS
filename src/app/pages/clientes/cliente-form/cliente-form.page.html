@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/clientes"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nuevo cliente' : 'Editar cliente' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      <ion-input
+        formControlName="nombre"
+        label="Nombre"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="El nombre es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="apellido"
+        label="Apellido"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="El apellido es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="domicilio"
+        label="Domicilio"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="El domicilio es obligatorio (máximo 255 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="telefono"
+        label="Teléfono"
+        labelPlacement="floating"
+        fill="outline"
+        type="tel"
+        inputmode="tel"
+        errorText="Escribe un número de 10 a 15 dígitos"
+      ></ion-input>
+
+      <ion-button type="submit" expand="block" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </ion-button>
+    </form>
+  }
+</ion-content>

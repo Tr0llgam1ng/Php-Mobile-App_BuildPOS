@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (sesion.usuario(); as usuario) {
+    <h1 class="saludo">Hola, {{ usuario.nombre }}</h1>
+    <p class="puesto">Puesto de trabajo: <strong>{{ usuario.rol }}</strong></p>
+  }
+
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      @for (opcion of opciones(); track opcion.url) {
+        <ion-col size="12" size-sm="6" size-lg="4">
+          <ion-card [button]="true" [routerLink]="opcion.url">
+            <ion-card-header>
+              <ion-icon color="primary" aria-hidden="true" [name]="opcion.icono"></ion-icon>
+              <ion-card-title>{{ opcion.titulo }}</ion-card-title>
+              <ion-card-subtitle>{{ opcion.descripcion }}</ion-card-subtitle>
+            </ion-card-header>
+          </ion-card>
+        </ion-col>
+      } @empty {
+        <p class="vacio">Tu puesto de trabajo aún no tiene módulos asignados. Contacta a un administrador.</p>
+      }
+    </ion-row>
+  </ion-grid>
+</ion-content>

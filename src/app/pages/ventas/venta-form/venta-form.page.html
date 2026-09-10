@@ -1,0 +1,33 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="id === null ? '/ventas' : '/ventas/' + id"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nueva venta' : 'Editar venta #' + id }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    @if (id !== null) {
+      <ion-text color="medium">
+        <p class="formulario">
+          Al guardar se reemplazan los materiales de la venta, el stock se ajusta con la diferencia y los precios se
+          toman del precio de venta actual.
+        </p>
+      </ion-text>
+    }
+
+    <app-documento-form
+      [clientes]="clientes()"
+      [materiales]="materiales()"
+      [inicial]="inicial()"
+      [unidadesApartadas]="apartadas()"
+      [guardando]="guardando()"
+      [textoGuardar]="id === null ? 'Registrar venta' : 'Guardar cambios'"
+      (guardar)="guardar($event)"
+    ></app-documento-form>
+  }
+</ion-content>

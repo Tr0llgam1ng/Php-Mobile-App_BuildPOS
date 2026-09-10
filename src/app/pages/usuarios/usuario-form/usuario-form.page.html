@@ -1,0 +1,96 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/usuarios"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Registrar usuario' : 'Editar usuario' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      <ion-input
+        formControlName="nombre"
+        label="Nombre"
+        labelPlacement="floating"
+        fill="outline"
+        autocomplete="given-name"
+        errorText="El nombre es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="apellido"
+        label="Apellido"
+        labelPlacement="floating"
+        fill="outline"
+        autocomplete="family-name"
+        errorText="El apellido es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-input
+        formControlName="edad"
+        label="Edad"
+        labelPlacement="floating"
+        fill="outline"
+        type="number"
+        inputmode="numeric"
+        errorText="La edad debe estar entre 18 y 100 años"
+      ></ion-input>
+
+      <ion-select
+        formControlName="id_rol"
+        label="Puesto de trabajo"
+        labelPlacement="floating"
+        fill="outline"
+        interface="popover"
+        placeholder="Selecciona un puesto"
+      >
+        @for (rol of roles(); track rol.id_rol) {
+          <ion-select-option [value]="rol.id_rol">{{ rol.nombre }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-input
+        formControlName="telefono"
+        label="Número de contacto"
+        labelPlacement="floating"
+        fill="outline"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        errorText="Escribe un número de 10 a 15 dígitos"
+      ></ion-input>
+
+      <ion-input
+        formControlName="correo"
+        label="Correo"
+        labelPlacement="floating"
+        fill="outline"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        errorText="Escribe un correo válido"
+      ></ion-input>
+
+      <ion-input
+        formControlName="password"
+        label="Contraseña"
+        labelPlacement="floating"
+        fill="outline"
+        type="password"
+        autocomplete="new-password"
+        errorText="La contraseña debe tener al menos 6 caracteres"
+        [helperText]="id === null ? 'Mínimo 6 caracteres' : 'Déjala vacía para conservar la actual'"
+      >
+        <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+      </ion-input>
+
+      <ion-button type="submit" expand="block" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : (id === null ? 'Registrar usuario' : 'Guardar cambios') }}
+      </ion-button>
+    </form>
+  }
+</ion-content>

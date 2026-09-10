@@ -1,0 +1,57 @@
+<ion-list>
+  <ion-item>
+    <ion-label>
+      <p>Cliente</p>
+      <h2>{{ documento().cliente }}</h2>
+    </ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>
+      <p>Fecha</p>
+      <h2>{{ documento().fecha | date: 'dd/MM/yyyy HH:mm' }}</h2>
+    </ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>
+      <p>Registró</p>
+      <h2>{{ documento().vendedor }}</h2>
+    </ion-label>
+  </ion-item>
+</ion-list>
+
+<ion-list>
+  <ion-list-header>
+    <ion-label>Materiales</ion-label>
+  </ion-list-header>
+  @for (linea of documento().detalles ?? []; track linea.id_detalle) {
+    <ion-item>
+      <ion-label>
+        <h2>{{ linea.material }}</h2>
+        <p>{{ linea.cantidad }} × {{ linea.precio_unitario | currency }}</p>
+        @if (mostrarExistencia()) {
+          @if (linea.cantidad <= linea.stock_actual) {
+            <p><ion-text color="success">En existencia ({{ linea.stock_actual }} disponibles)</ion-text></p>
+          } @else {
+            <p><ion-text color="danger">Existencia insuficiente: solo hay {{ linea.stock_actual }}</ion-text></p>
+          }
+        }
+      </ion-label>
+      <ion-note slot="end">{{ linea.subtotal | currency }}</ion-note>
+    </ion-item>
+  }
+</ion-list>
+
+<ion-list class="totales" lines="none">
+  <ion-item>
+    <ion-label>Subtotal</ion-label>
+    <ion-note slot="end">{{ documento().subtotal | currency }}</ion-note>
+  </ion-item>
+  <ion-item>
+    <ion-label>Impuesto ({{ documento().impuesto }} %)</ion-label>
+    <ion-note slot="end">{{ montoImpuesto() | currency }}</ion-note>
+  </ion-item>
+  <ion-item class="total">
+    <ion-label>Total</ion-label>
+    <ion-note slot="end">{{ documento().total | currency }}</ion-note>
+  </ion-item>
+</ion-list>

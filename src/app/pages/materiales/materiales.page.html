@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Materiales</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por material o proveedor"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [value]="soloStockBajo() ? 'bajo' : 'todos'" (ionChange)="soloStockBajo.set($event.detail.value === 'bajo')">
+      <ion-segment-button value="todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="bajo">
+        <ion-label>Stock bajo (≤ {{ stockMinimo }})</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (material of visibles(); track material.id_material) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ material.nombre }}</h2>
+            <p>Proveedor: {{ material.proveedor }}</p>
+            <p>
+              Venta: {{ material.precio_venta | currency }}
+              @if (material.precio_compra !== undefined) {
+                · Compra: {{ material.precio_compra | currency }}
+              }
+            </p>
+            <p>
+              <ion-text [color]="material.stock <= stockMinimo ? 'danger' : 'success'">
+                Stock: {{ material.stock }}{{ material.stock <= stockMinimo ? ' (bajo)' : '' }}
+              </ion-text>
+            </p>
+          </ion-label>
+          @if (sesion.puede('materiales', 'editar')) {
+            <ion-button slot="end" fill="clear" aria-label="Ajustar stock" (click)="ajustarStock(material)">
+              <ion-icon slot="icon-only" name="layers-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+            <ion-button slot="end" fill="clear" aria-label="Editar material" [routerLink]="[material.id_material]">
+              <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+          @if (sesion.puede('materiales', 'eliminar')) {
+            <ion-button slot="end" fill="clear" color="danger" aria-label="Eliminar material" (click)="eliminar(material)">
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+        </ion-item>
+      } @empty {
+        <p class="vacio">No se encontraron materiales.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('materiales', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button routerLink="nuevo" aria-label="Nuevo material">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

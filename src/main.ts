@@ -1,18 +1,7 @@
-import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular';
-import { defineCustomElements } from '@ionic/pwa-elements/loader';
+import { platformBrowser } from '@angular/platform-browser';
 
-import { routes } from './app/app.routes';
-import { AppComponent } from './app/app.component';
+import { AppModule } from './app/app.module';
 
-// Call the element loader before the bootstrapApplication call
-defineCustomElements(window);
-
-bootstrapApplication(AppComponent, {
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-  ],
-}).catch((err) => console.error(err));
+platformBrowser()
+  .bootstrapModule(AppModule)
+  .catch((err) => console.error(err));

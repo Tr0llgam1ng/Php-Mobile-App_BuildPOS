@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Usuarios</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por nombre, correo o puesto"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (usuario of filtrados(); track usuario.id_usuario) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+            <p>{{ usuario.correo }} · {{ usuario.telefono }}</p>
+            <p>{{ usuario.rol }} · {{ usuario.edad }} años</p>
+          </ion-label>
+          @if (sesion.puede('usuarios', 'editar')) {
+            <ion-button slot="end" fill="clear" aria-label="Editar usuario" [routerLink]="[usuario.id_usuario]">
+              <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+          @if (sesion.puede('usuarios', 'eliminar') && usuario.id_usuario !== sesion.usuario()?.id_usuario) {
+            <ion-button slot="end" fill="clear" color="danger" aria-label="Eliminar usuario" (click)="eliminar(usuario)">
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+        </ion-item>
+      } @empty {
+        <p class="vacio">No se encontraron usuarios.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('usuarios', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button routerLink="nuevo" aria-label="Registrar usuario">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

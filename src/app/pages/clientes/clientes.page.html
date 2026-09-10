@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Clientes</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por nombre, teléfono o domicilio"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (cliente of filtrados(); track cliente.id_cliente) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ cliente.nombre }} {{ cliente.apellido }}</h2>
+            <p>{{ cliente.telefono }}</p>
+            <p>{{ cliente.domicilio }}</p>
+          </ion-label>
+          @if (sesion.puede('clientes', 'editar')) {
+            <ion-button slot="end" fill="clear" aria-label="Editar cliente" [routerLink]="[cliente.id_cliente]">
+              <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+          @if (sesion.puede('clientes', 'eliminar')) {
+            <ion-button slot="end" fill="clear" color="danger" aria-label="Eliminar cliente" (click)="eliminar(cliente)">
+              <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+            </ion-button>
+          }
+        </ion-item>
+      } @empty {
+        <p class="vacio">No se encontraron clientes.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('clientes', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button routerLink="nuevo" aria-label="Nuevo cliente">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

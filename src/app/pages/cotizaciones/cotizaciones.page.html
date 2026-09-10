@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Cotizaciones</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por folio, cliente o estado"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (cotizacion of filtrados(); track cotizacion.id_cotizacion) {
+        <ion-item [button]="true" [routerLink]="[cotizacion.id_cotizacion]">
+          <ion-label>
+            <h2>Cotización #{{ cotizacion.id_cotizacion }} · {{ cotizacion.cliente }}</h2>
+            <p>{{ cotizacion.fecha | date: 'dd/MM/yyyy HH:mm' }} · {{ cotizacion.vendedor }}</p>
+            <p>
+              @if (cotizacion.estado === 'pendiente') {
+                <ion-text color="warning">Pendiente</ion-text>
+              } @else {
+                <ion-text color="success">Convertida en la venta #{{ cotizacion.id_venta }}</ion-text>
+              }
+            </p>
+          </ion-label>
+          <ion-note slot="end">{{ cotizacion.total | currency }}</ion-note>
+        </ion-item>
+      } @empty {
+        <p class="vacio">No hay cotizaciones registradas.</p>
+      }
+    </ion-list>
+  }
+
+  @if (sesion.puede('cotizaciones', 'crear')) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button routerLink="nueva" aria-label="Nueva cotización">
+        <ion-icon name="add" aria-hidden="true"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

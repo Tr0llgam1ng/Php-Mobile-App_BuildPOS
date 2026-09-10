@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cotizaciones"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Cotización #{{ id }}</ion-title>
+    @if (pendiente()) {
+      <ion-buttons slot="end">
+        @if (sesion.puede('cotizaciones', 'editar')) {
+          <ion-button aria-label="Editar cotización" [routerLink]="['/cotizaciones', id, 'editar']">
+            <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+        }
+        @if (sesion.puede('cotizaciones', 'eliminar')) {
+          <ion-button color="danger" aria-label="Eliminar cotización" (click)="eliminar()">
+            <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+        }
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cotizacion(); as detalle) {
+    <div class="formulario">
+      @if (detalle.estado === 'pendiente') {
+        <ion-chip color="warning">
+          <ion-label>Pendiente</ion-label>
+        </ion-chip>
+        @if (!detalle.hay_stock) {
+          <ion-text color="danger">
+            <p>Algunos materiales no tienen existencia suficiente. Edita la cotización o espera a que haya stock.</p>
+          </ion-text>
+        }
+      } @else {
+        <ion-chip color="success">
+          <ion-label>Convertida en la venta #{{ detalle.id_venta }}</ion-label>
+        </ion-chip>
+      }
+
+      <app-documento-resumen [documento]="detalle" [mostrarExistencia]="detalle.estado === 'pendiente'"></app-documento-resumen>
+
+      @if (detalle.estado === 'pendiente' && puedeConvertir()) {
+        <ion-button expand="block" [disabled]="procesando() || !detalle.hay_stock" (click)="convertir()">
+          <ion-icon slot="start" name="swap-horizontal-outline" aria-hidden="true"></ion-icon>
+          Convertir en venta
+        </ion-button>
+      }
+
+      @if (detalle.estado === 'convertida' && detalle.id_venta && sesion.puede('ventas')) {
+        <ion-button expand="block" fill="outline" [routerLink]="['/ventas', detalle.id_venta]">
+          <ion-icon slot="start" name="receipt-outline" aria-hidden="true"></ion-icon>
+          Ver venta #{{ detalle.id_venta }}
+        </ion-button>
+      }
+    </div>
+  } @else {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  }
+</ion-content>

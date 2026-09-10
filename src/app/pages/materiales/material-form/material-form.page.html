@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/materiales"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nuevo material' : 'Editar material' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <form class="formulario" [formGroup]="form" (ngSubmit)="guardar()">
+      @if (!proveedores().length) {
+        <ion-text color="warning">
+          <p>
+            No hay proveedores registrados.
+            {{ sesion.puede('proveedores', 'crear') ? 'Registra uno primero.' : 'Pide a un administrador que registre uno.' }}
+          </p>
+        </ion-text>
+      }
+
+      <ion-input
+        formControlName="nombre"
+        label="Nombre"
+        labelPlacement="floating"
+        fill="outline"
+        errorText="El nombre es obligatorio (máximo 100 caracteres)"
+      ></ion-input>
+
+      <ion-select
+        formControlName="id_proveedor"
+        label="Proveedor"
+        labelPlacement="floating"
+        fill="outline"
+        interface="popover"
+        placeholder="Selecciona un proveedor"
+      >
+        @for (proveedor of proveedores(); track proveedor.id_proveedor) {
+          <ion-select-option [value]="proveedor.id_proveedor">{{ proveedor.nombre }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-input
+        formControlName="stock"
+        label="Stock"
+        labelPlacement="floating"
+        fill="outline"
+        type="number"
+        inputmode="numeric"
+        errorText="El stock debe ser un número entero mayor o igual a 0"
+      ></ion-input>
+
+      <ion-input
+        formControlName="precio_compra"
+        label="Precio de compra"
+        labelPlacement="floating"
+        fill="outline"
+        type="number"
+        inputmode="decimal"
+        errorText="Escribe un precio mayor o igual a 0"
+      ></ion-input>
+
+      <ion-input
+        formControlName="precio_venta"
+        label="Precio de venta"
+        labelPlacement="floating"
+        fill="outline"
+        type="number"
+        inputmode="decimal"
+        errorText="Escribe un precio mayor o igual a 0"
+      ></ion-input>
+
+      <ion-button type="submit" expand="block" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </ion-button>
+    </form>
+  }
+</ion-content>

@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/ventas"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Venta #{{ id }}</ion-title>
+    <ion-buttons slot="end">
+      @if (sesion.puede('ventas', 'editar')) {
+        <ion-button aria-label="Editar venta" [routerLink]="['/ventas', id, 'editar']">
+          <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+        </ion-button>
+      }
+      @if (sesion.puede('ventas', 'eliminar')) {
+        <ion-button color="danger" aria-label="Eliminar venta" (click)="eliminar()">
+          <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (venta(); as detalle) {
+    <div class="formulario">
+      @if (detalle.id_cotizacion) {
+        @if (sesion.puede('cotizaciones')) {
+          <ion-chip color="tertiary" [routerLink]="['/cotizaciones', detalle.id_cotizacion]">
+            <ion-icon name="document-text-outline" aria-hidden="true"></ion-icon>
+            <ion-label>Proviene de la cotización #{{ detalle.id_cotizacion }}</ion-label>
+          </ion-chip>
+        } @else {
+          <ion-chip color="tertiary">
+            <ion-label>Proviene de la cotización #{{ detalle.id_cotizacion }}</ion-label>
+          </ion-chip>
+        }
+      }
+
+      <app-documento-resumen [documento]="detalle"></app-documento-resumen>
+    </div>
+  } @else {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  }
+</ion-content>

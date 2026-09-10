@@ -35,3 +35,56 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* ---------------------------------------------------------------------------
+ * Estilos compartidos por las páginas
+ * ------------------------------------------------------------------------- */
+
+.cargando {
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.vacio {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--ion-color-medium);
+}
+
+.nota {
+  margin: 0;
+  padding: 12px 16px 0;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+/* Espacio para que el botón flotante no tape el último elemento */
+.lista-con-fab {
+  padding-bottom: 88px;
+}
+
+.formulario {
+  max-width: 720px;
+  margin: 0 auto;
+
+  > ion-input,
+  > ion-select {
+    margin-bottom: 16px;
+  }
+}
+
+.totales {
+  ion-item {
+    --min-height: 36px;
+  }
+
+  ion-item.total {
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    ion-note {
+      color: var(--ion-text-color);
+    }
+  }
+}

@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="id === null ? '/cotizaciones' : '/cotizaciones/' + id"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nueva cotización' : 'Editar cotización #' + id }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-text color="medium">
+      <p class="formulario">
+        La cotización verifica que haya existencia de cada material, pero el stock solo se descuenta al convertirla en
+        venta.
+      </p>
+    </ion-text>
+
+    <app-documento-form
+      [clientes]="clientes()"
+      [materiales]="materiales()"
+      [inicial]="inicial()"
+      [guardando]="guardando()"
+      [textoGuardar]="id === null ? 'Registrar cotización' : 'Guardar cambios'"
+      (guardar)="guardar($event)"
+    ></app-documento-form>
+  }
+</ion-content>

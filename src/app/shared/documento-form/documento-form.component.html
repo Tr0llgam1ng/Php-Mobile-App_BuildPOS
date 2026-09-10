@@ -1,0 +1,124 @@
+<div class="formulario">
+  @if (!clientes().length) {
+    <ion-text color="warning">
+      <p>No hay clientes registrados. Registra uno antes de continuar.</p>
+    </ion-text>
+  }
+  @if (!materiales().length) {
+    <ion-text color="warning">
+      <p>No hay materiales registrados.</p>
+    </ion-text>
+  }
+
+  <ion-select
+    label="Cliente"
+    labelPlacement="floating"
+    fill="outline"
+    interface="popover"
+    placeholder="Selecciona un cliente"
+    [value]="idCliente()"
+    (ionChange)="idCliente.set($event.detail.value)"
+  >
+    @for (cliente of clientes(); track cliente.id_cliente) {
+      <ion-select-option [value]="cliente.id_cliente">{{ cliente.nombre }} {{ cliente.apellido }}</ion-select-option>
+    }
+  </ion-select>
+
+  <h3 class="titulo-seccion">Materiales</h3>
+
+  @for (linea of resumen().lineas; track linea.clave) {
+    <div class="linea">
+      <div class="campos">
+        <ion-select
+          class="material"
+          label="Material"
+          labelPlacement="floating"
+          fill="outline"
+          interface="popover"
+          placeholder="Selecciona"
+          [value]="linea.id_material"
+          (ionChange)="cambiarMaterial(linea.clave, $event.detail.value)"
+        >
+          @for (material of materiales(); track material.id_material) {
+            <ion-select-option
+              [value]="material.id_material"
+              [disabled]="usadoEnOtraLinea(material.id_material, linea.clave)"
+            >
+              {{ material.nombre }} ({{ disponible(material) }} disp.)
+            </ion-select-option>
+          }
+        </ion-select>
+
+        <ion-input
+          class="cantidad"
+          label="Cantidad"
+          labelPlacement="floating"
+          fill="outline"
+          type="number"
+          inputmode="numeric"
+          [min]="1"
+          [value]="linea.cantidad"
+          (ionInput)="cambiarCantidad(linea.clave, $event.detail.value)"
+        ></ion-input>
+
+        <ion-button fill="clear" color="danger" aria-label="Quitar material" (click)="quitarLinea(linea.clave)">
+          <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+        </ion-button>
+      </div>
+
+      @if (linea.material) {
+        <p class="detalle-linea">
+          {{ linea.material.precio_venta | currency }} × {{ linea.cantidad ?? 0 }} =
+          <strong>{{ linea.subtotal | currency }}</strong>
+          @if (linea.excede) {
+            <ion-text color="danger"> · Solo hay {{ linea.disponible }} en existencia</ion-text>
+          }
+        </p>
+      }
+    </div>
+  }
+
+  <ion-button fill="outline" expand="block" (click)="agregarLinea()">
+    <ion-icon slot="start" name="add" aria-hidden="true"></ion-icon>
+    Agregar material
+  </ion-button>
+
+  <ion-input
+    class="impuesto"
+    label="Impuesto (%)"
+    labelPlacement="floating"
+    fill="outline"
+    type="number"
+    inputmode="decimal"
+    helperText="16 = IVA 16 %. Escribe 0 si no aplica impuesto."
+    [min]="0"
+    [max]="100"
+    [value]="impuesto()"
+    (ionInput)="cambiarImpuesto($event.detail.value)"
+  ></ion-input>
+
+  <ion-list class="totales" lines="none">
+    <ion-item>
+      <ion-label>Subtotal</ion-label>
+      <ion-note slot="end">{{ resumen().subtotal | currency }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Impuesto ({{ impuesto() ?? 0 }} %)</ion-label>
+      <ion-note slot="end">{{ resumen().montoImpuesto | currency }}</ion-note>
+    </ion-item>
+    <ion-item class="total">
+      <ion-label>Total</ion-label>
+      <ion-note slot="end">{{ resumen().total | currency }}</ion-note>
+    </ion-item>
+  </ion-list>
+
+  @if (intentoGuardar() && problema(); as mensaje) {
+    <ion-text color="danger">
+      <p>{{ mensaje }}</p>
+    </ion-text>
+  }
+
+  <ion-button expand="block" [disabled]="guardando()" (click)="enviar()">
+    {{ guardando() ? 'Guardando…' : textoGuardar() }}
+  </ion-button>
+</div>

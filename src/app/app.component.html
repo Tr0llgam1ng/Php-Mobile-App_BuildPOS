@@ -1,3 +1,48 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-split-pane contentId="contenido-principal" [disabled]="!sesion.usuario()">
+    <ion-menu contentId="contenido-principal" [disabled]="!sesion.usuario()">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Movil II</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        @if (sesion.usuario(); as usuario) {
+          <div class="perfil">
+            <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+            <ion-note>{{ usuario.rol }}</ion-note>
+          </div>
+        }
+
+        <ion-list lines="none">
+          @for (opcion of opciones(); track opcion.url) {
+            <ion-menu-toggle [autoHide]="false">
+              <ion-item
+                routerDirection="root"
+                routerLinkActive="seleccionado"
+                [routerLink]="opcion.url"
+                [button]="true"
+                [detail]="false"
+              >
+                <ion-icon slot="start" aria-hidden="true" [name]="opcion.icono"></ion-icon>
+                <ion-label>{{ opcion.titulo }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          }
+        </ion-list>
+      </ion-content>
+
+      <ion-footer>
+        <ion-menu-toggle [autoHide]="false">
+          <ion-button expand="block" fill="clear" color="danger" (click)="cerrarSesion()">
+            <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+            Cerrar sesión
+          </ion-button>
+        </ion-menu-toggle>
+      </ion-footer>
+    </ion-menu>
+
+    <ion-router-outlet id="contenido-principal"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>
