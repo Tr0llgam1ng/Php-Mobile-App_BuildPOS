@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/borradores"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id === null ? 'Nuevo borrador' : 'Editar borrador' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <div class="formulario">
+      @if (copiaDel(); as fecha) {
+        <ion-text color="warning">
+          <p>
+            <ion-icon name="cloud-offline-outline" aria-hidden="true"></ion-icon>
+            Sin conexión con el servidor. Se usan los clientes y materiales guardados el
+            {{ fecha | date: 'dd/MM/yyyy HH:mm' }}.
+          </p>
+        </ion-text>
+      } @else {
+        <ion-text color="medium">
+          <p>El borrador se guarda solo en este dispositivo. La existencia se verifica al enviarlo como cotización.</p>
+        </ion-text>
+      }
+
+      <ion-input
+        label="Referencia (obra, calle, etc.)"
+        labelPlacement="floating"
+        fill="outline"
+        maxlength="80"
+        [value]="referencia()"
+        (ionInput)="referencia.set($event.detail.value ?? '')"
+      ></ion-input>
+
+      <ion-textarea
+        class="notas"
+        label="Notas"
+        labelPlacement="floating"
+        fill="outline"
+        [autoGrow]="true"
+        maxlength="500"
+        [value]="notas()"
+        (ionInput)="notas.set($event.detail.value ?? '')"
+      ></ion-textarea>
+    </div>
+
+    <app-documento-form
+      [clientes]="clientes()"
+      [materiales]="materiales()"
+      [inicial]="inicial()"
+      [validarExistencia]="false"
+      [guardando]="guardando()"
+      [textoGuardar]="id === null ? 'Guardar borrador' : 'Guardar cambios'"
+      (guardar)="guardar($event)"
+    ></app-documento-form>
+  }
+</ion-content>

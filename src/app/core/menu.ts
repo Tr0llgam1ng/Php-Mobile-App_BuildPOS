@@ -1,4 +1,4 @@
-import { Recurso } from './models/usuario.model';
+import { Accion, Recurso } from './models/usuario.model';
 
 export interface OpcionMenu {
   titulo: string;
@@ -7,6 +7,8 @@ export interface OpcionMenu {
   icono: string;
   /** Si se indica, la opción solo aparece para los puestos que pueden "leer" ese recurso */
   recurso?: Recurso;
+  /** Acción que exige además de "leer" (p. ej. los borradores requieren poder crear cotizaciones) */
+  accion?: Accion;
 }
 
 export const MENU: OpcionMenu[] = [
@@ -18,6 +20,14 @@ export const MENU: OpcionMenu[] = [
     url: '/cotizaciones',
     icono: 'document-text-outline',
     recurso: 'cotizaciones',
+  },
+  {
+    titulo: 'Borradores',
+    descripcion: 'Cotizaciones guardadas en el dispositivo',
+    url: '/borradores',
+    icono: 'save-outline',
+    recurso: 'cotizaciones',
+    accion: 'crear',
   },
   { titulo: 'Clientes', descripcion: 'Datos de los clientes', url: '/clientes', icono: 'people-outline', recurso: 'clientes' },
   { titulo: 'Materiales', descripcion: 'Inventario y stock', url: '/materiales', icono: 'cube-outline', recurso: 'materiales' },

@@ -59,6 +59,13 @@ const routes: Routes = [
     loadChildren: () => import('./pages/cotizaciones/cotizaciones.module').then((m) => m.CotizacionesPageModule),
   },
   {
+    // Borradores locales: solo para quien puede registrar cotizaciones
+    path: 'borradores',
+    canActivate: [authGuard],
+    data: { recurso: 'cotizaciones', accion: 'crear' },
+    loadChildren: () => import('./pages/borradores/borradores.module').then((m) => m.BorradoresPageModule),
+  },
+  {
     path: 'finanzas',
     canActivate: [authGuard],
     data: { recurso: 'finanzas' },

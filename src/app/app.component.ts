@@ -19,7 +19,7 @@ export class AppComponent {
 
   /** Opciones del menú lateral permitidas para el puesto del usuario */
   protected readonly opciones = computed(() =>
-    this.sesion.usuario() ? MENU.filter((opcion) => !opcion.recurso || this.sesion.puede(opcion.recurso)) : [],
+    this.sesion.usuario() ? MENU.filter((opcion) => !opcion.recurso || this.sesion.puede(opcion.recurso, opcion.accion)) : [],
   );
 
   constructor() {

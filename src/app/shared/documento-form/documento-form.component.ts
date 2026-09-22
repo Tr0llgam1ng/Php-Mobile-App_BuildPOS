@@ -29,6 +29,8 @@ export class DocumentoFormComponent implements OnInit {
   readonly inicial = input<DocumentoGuardar | null>(null);
   /** Unidades que el documento ya tiene apartadas (al editar una venta); cuentan como disponibles */
   readonly unidadesApartadas = input<Record<number, number>>({});
+  /** false en los borradores: el stock se vuelve a verificar al enviarlos como cotización */
+  readonly validarExistencia = input(true);
   readonly textoGuardar = input('Guardar');
   readonly guardando = input(false);
   readonly guardar = output<DocumentoGuardar>();
@@ -53,7 +55,7 @@ export class DocumentoFormComponent implements OnInit {
         material,
         disponible,
         subtotal: material ? redondear(material.precio_venta * cantidad) : 0,
-        excede: !!material && cantidad > disponible,
+        excede: this.validarExistencia() && !!material && cantidad > disponible,
       };
     });
     const subtotal = redondear(lineas.reduce((suma, linea) => suma + linea.subtotal, 0));

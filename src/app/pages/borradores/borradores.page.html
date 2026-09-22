@@ -1,0 +1,74 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Borradores</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      placeholder="Buscar por referencia, cliente o notas"
+      [debounce]="150"
+      (ionInput)="busqueda.set($event.detail.value ?? '')"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <p class="nota">
+    Se guardan en este dispositivo y siguen aquí aunque cierres la app. Envíalos como cotización cuando estén listos.
+  </p>
+
+  @if (cargando()) {
+    <div class="cargando"><ion-spinner></ion-spinner></div>
+  } @else {
+    <ion-list class="lista-con-fab">
+      @for (borrador of filtrados(); track borrador.id) {
+        <ion-item>
+          <ion-label>
+            <h2>{{ borrador.referencia || 'Sin referencia' }}</h2>
+            <p>{{ borrador.cliente }} · {{ borrador.datos.detalles.length }} material(es) · {{ borrador.total | currency }}</p>
+            <p>Modificado el {{ borrador.actualizado | date: 'dd/MM/yyyy HH:mm' }}</p>
+            @if (borrador.notas) {
+              <p>{{ borrador.notas }}</p>
+            }
+          </ion-label>
+          <ion-button
+            slot="end"
+            fill="clear"
+            aria-label="Enviar como cotización"
+            [disabled]="enviando() === borrador.id"
+            (click)="enviar(borrador)"
+          >
+            <ion-icon slot="icon-only" name="paper-plane-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+          <ion-button slot="end" fill="clear" aria-label="Editar borrador" [routerLink]="[borrador.id]">
+            <ion-icon slot="icon-only" name="create-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+          <ion-button
+            slot="end"
+            fill="clear"
+            color="danger"
+            aria-label="Eliminar borrador"
+            [disabled]="enviando() === borrador.id"
+            (click)="eliminar(borrador)"
+          >
+            <ion-icon slot="icon-only" name="trash-outline" aria-hidden="true"></ion-icon>
+          </ion-button>
+        </ion-item>
+      } @empty {
+        <p class="vacio">No hay borradores guardados.</p>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button routerLink="nuevo" aria-label="Nuevo borrador">
+      <ion-icon name="add" aria-hidden="true"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

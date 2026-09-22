@@ -14,6 +14,6 @@ export class InicioPage {
 
   /** Módulos a los que tiene acceso el puesto del usuario */
   protected readonly opciones = computed(() =>
-    MENU.filter((opcion) => opcion.recurso && this.sesion.puede(opcion.recurso)),
+    MENU.filter((opcion) => opcion.recurso && this.sesion.puede(opcion.recurso, opcion.accion)),
   );
 }

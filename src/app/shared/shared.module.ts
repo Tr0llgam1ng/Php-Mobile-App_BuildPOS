@@ -45,6 +45,7 @@ import {
   IonSpinner,
   IonSplitPane,
   IonText,
+  IonTextarea,
   IonTitle,
   IonToolbar,
 } from '@ionic/angular';
@@ -95,6 +96,7 @@ const IONIC = [
   IonSpinner,
   IonSplitPane,
   IonText,
+  IonTextarea,
   IonTitle,
   IonToolbar,
 ];
